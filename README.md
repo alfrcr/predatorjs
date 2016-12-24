@@ -126,8 +126,8 @@ Feel free to add another rule by submitting PR
 
 ## Todo
 
-1. Disable form button if all required form has not been filled yet
-2. Add another advance rules
+1. Add another advance rules
+2. Add test case
 
 ## License
 

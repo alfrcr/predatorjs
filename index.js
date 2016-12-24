@@ -7,7 +7,7 @@ import titleCase from 'title-case'
 import validator from 'validator'
 
 const withValidator = (rules, messages) => {
-  const validatorState = _.map(Object.keys(rules), form => ({
+  const validatorState = _.map(_.keys(rules), form => ({
     name: form,
     message: '',
     rules: _.map(rules[form].split('|'), rule => {
@@ -19,6 +19,12 @@ const withValidator = (rules, messages) => {
       return _.assign({}, { type: rule })
     })
   }))
+
+  const requiredForm = _.filter(_.keys(rules), form => rules[form].indexOf('required') !== -1)
+    .reduce((current, next) => {
+      current[next] = ''
+      return current
+    }, {})
 
   const defaultMsg = {
     required: '{form} can not be empty',
@@ -47,20 +53,29 @@ const withValidator = (rules, messages) => {
         this.state = {
           form: validatorState,
           messages: validatorMsg,
+          required: requiredForm,
           formIsValid: false
         }
       }
 
       /* Error log */
       formErrorLogger = key => {
-        console.log(`Redator Error: ${key} never been registered to the form rules.`)
+        console.error(`Redator Error: ${key} never been registered to the form rules.`)
       };
 
-      /* Public API for validating */
       validate = (key, value) => {
-        const { form } = this.state
+        const { form, required } = this.state
         const index = _.findIndex(form, data => data.name === key)
-        this.validating(form[index].rules, index, value)
+        const newState = update(required, { [key]: { $set: value } })
+
+        if (key in this.state.required) {
+          this.setState({ ...this.state, required: newState }, () => {
+            this.validating(form[index].rules, index, value)
+          })
+        } else {
+          this.validating(form[index].rules, index, value)
+        }
+
       };
 
       validating = (formRules, index, formValue) => {
@@ -166,10 +181,11 @@ const withValidator = (rules, messages) => {
        *  to disable or enable submit button
        */
       formIsValid = () => {
-        const { form } = this.state
+        const { form, required } = this.state
         const errCount = _.filter(form, f => f.message !== '').length
+        const complete = _.filter(_.keys(required), formIndex => required[formIndex] === '').length
 
-        if (errCount === 0) {
+        if (errCount === 0 && complete === 0) {
           this.setState({ ...this.state, formIsValid: true })
         } else {
           this.setState({ ...this.state, formIsValid: false })
