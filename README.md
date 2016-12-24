@@ -105,10 +105,10 @@ const formRules = {
  *  if formMessages is not provided
 */
 const formMessages = {
-    required: 'Telolet! {form} can not be empty!',
-    email: 'This {form} is not a valid email!',
-    num: '{form} only accept number.'
-  }
+  required: 'Telolet! {form} can not be empty!',
+  email: 'This {form} is not a valid email!',
+  num: '{form} only accept number.'
+}
 
 export default withValidator(formRules, formMessages)(ExampleForm)
 
@@ -116,6 +116,7 @@ export default withValidator(formRules, formMessages)(ExampleForm)
 
 ## API
 
+### Props
 #### `validate(key, value)`
 Validating a form based on key. Key must be unique and also must be exist in formRules
 
@@ -124,6 +125,27 @@ Return true if all required form has been filled and no errors found.
 
 #### `getErrorMessage(key)`
 Get error message based on key.
+
+### HOC
+#### `withValidator(formRules, [, formMessage])`
+Higher order component that return all props which have been mentioned above. First parameter is form rules.
+Form rules must be an object. For instances:
+```
+const formRules = {
+  username: 'required|min:6|max:12',
+  fullname: 'required',
+  email: 'required|email',
+  phone: 'num'
+}
+```
+Second parameter is optional, Predator will use default messages if this parameter is not provided. Error message example:
+```
+const formMessages = {
+  required: 'Telolet! {form} can not be empty!',
+  email: 'This {form} is not a valid email!',
+  num: '{form} only accept number.'
+}
+```
 
 ## Available Rules
 
