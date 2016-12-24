@@ -143,7 +143,9 @@ Second parameter is optional, Predator will use default messages if this paramet
 const formMessages = {
   required: 'Telolet! {form} can not be empty!',
   email: 'This {form} is not a valid email!',
-  num: '{form} only accept number.'
+  num: '{form} only accept number.',
+  min: '{form} min length is {value} characters.',
+  max: '{form} max length is {value} characters.'
 }
 ```
 
