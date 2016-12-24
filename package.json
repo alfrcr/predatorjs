@@ -2,10 +2,11 @@
   "name": "predatorjs",
   "version": "0.0.1",
   "description": "Painless React Form Validator, Predator is basic form validator inspired by Laravel Validation",
-  "main": "index.js",
+  "main": "lib/index.js",
   "author": "alfredcrozby@gmail.com",
   "license": "MIT",
   "devDependencies": {
+    "babel-cli": "^6.18.0",
     "babel-core": "^6.21.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.10",
@@ -24,6 +25,7 @@
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-tap-event-plugin": "^2.0.1",
+    "rimraf": "^2.5.4",
     "webpack": "^1.14.0",
     "webpack-dev-middleware": "^1.9.0"
   },
@@ -34,8 +36,11 @@
     "validator": "^6.2.0"
   },
   "scripts": {
-    "lint": "eslint --ignore-path .gitignore examples",
-    "start": "node examples/server.js"
+    "clean": "rimraf lib",
+    "lint": "eslint --ignore-path .eslintignore examples",
+    "build": "yarn lint && yarn run clean && babel ./es6 --out-dir ./lib",
+    "start": "node examples/server.js",
+    "prepublish": "yarn build"
   },
   "eslintConfig": {
     "parser": "babel-eslint",

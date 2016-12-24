@@ -3,7 +3,7 @@
 import React, { Component, PropTypes } from 'react'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import withValidator from '../index'
+import withValidator from '../es6/index'
 
 class ExampleForm extends Component {
   constructor(props) {
