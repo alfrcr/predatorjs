@@ -3,6 +3,14 @@
 Predator is a React Higher Order Component to validate form with basic validator.
 Predator is inspired by [Laravel Validation](https://laravel.com/docs/5.3/validation)
 
+## Install
+
+Predator is available at npm
+
+`$ npm install --save predatorjs`
+or
+`$ yarn add predatorjs`
+
 ## Examples 
 
 This example is using [Material-UI](https://material-ui.com)
@@ -105,6 +113,17 @@ const formMessages = {
 export default withValidator(formRules, formMessages)(ExampleForm)
 
 ```
+
+## API
+
+`####validate(key, value)`
+Validating a form based on key. Key must be unique and also must be exist in formRules
+
+`####formIsValid`
+Return true if all required form has been filled and no errors found.
+
+`####getErrorMessage(key)`
+Get error message based on key.
 
 ## Available Rules
 
