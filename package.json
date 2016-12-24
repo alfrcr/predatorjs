@@ -1,5 +1,5 @@
 {
-  "name": "predator",
+  "name": "predatorjs",
   "version": "0.0.1",
   "description": "Painless React Form Validator, Predator is basic form validator inspired by Laravel Validation",
   "main": "index.js",
