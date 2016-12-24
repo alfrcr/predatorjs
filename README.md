@@ -7,9 +7,9 @@ Predator is inspired by [Laravel Validation](https://laravel.com/docs/5.3/valida
 
 Predator is available at npm
 
-`$ npm install --save predatorjs`
+```$ npm install --save predatorjs```
 or
-`$ yarn add predatorjs`
+```$ yarn add predatorjs```
 
 ## Examples 
 
@@ -116,13 +116,13 @@ export default withValidator(formRules, formMessages)(ExampleForm)
 
 ## API
 
-`####validate(key, value)`
+#### `validate(key, value)`
 Validating a form based on key. Key must be unique and also must be exist in formRules
 
-`####formIsValid`
+#### `formIsValid`
 Return true if all required form has been filled and no errors found.
 
-`####getErrorMessage(key)`
+#### `getErrorMessage(key)`
 Get error message based on key.
 
 ## Available Rules
