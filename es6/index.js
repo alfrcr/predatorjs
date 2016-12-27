@@ -1,26 +1,32 @@
 /* eslint-disable prefer-template, no-console */
 
-import _ from 'lodash'
+import map from 'lodash/map'
+import keys from 'lodash/keys'
+import assign from 'lodash/assign'
+import filter from 'lodash/filter'
+import forEach from 'lodash/forEach'
+import findIndex from 'lodash/findIndex'
+
 import React, { Component } from 'react'
 import update from 'react-addons-update'
 import titleCase from 'title-case'
 import validator from 'validator'
 
 const withValidator = (rules, messages) => {
-  const validatorState = _.map(_.keys(rules), form => ({
+  const validatorState = map(keys(rules), form => ({
     name: form,
     message: '',
-    rules: _.map(rules[form].split('|'), rule => {
+    rules: map(rules[form].split('|'), rule => {
       if (rule.indexOf('min:') !== -1 || rule.indexOf('max:') !== -1) {
         const minMax = rule.split(':')
-        return _.assign({}, { type: minMax[0], [minMax[0]]: minMax[1] })
+        return assign({}, { type: minMax[0], [minMax[0]]: minMax[1] })
       }
 
-      return _.assign({}, { type: rule })
+      return assign({}, { type: rule })
     })
   }))
 
-  const requiredForm = _.filter(_.keys(rules), form => rules[form].indexOf('required') !== -1)
+  const requiredForm = filter(keys(rules), form => rules[form].indexOf('required') !== -1)
     .reduce((current, next) => {
       current[next] = ''
       return current
@@ -40,8 +46,8 @@ const withValidator = (rules, messages) => {
   }
 
   const validatorMsg = (typeof messages !== undefined)
-    ? _.assign({}, defaultMsg, messages)
-    : _.assign({}, defaultMsg)
+    ? assign({}, defaultMsg, messages)
+    : assign({}, defaultMsg)
 
   const composed = ComposedComponent =>
     class Validator extends Component {
@@ -65,7 +71,7 @@ const withValidator = (rules, messages) => {
 
       validate = (key, value) => {
         const { form, required } = this.state
-        const index = _.findIndex(form, data => data.name === key)
+        const index = findIndex(form, data => data.name === key)
         const newState = update(required, { [key]: { $set: value } })
 
         if (key in this.state.required) {
@@ -88,7 +94,7 @@ const withValidator = (rules, messages) => {
         const resetMessage = this.formatMessage(index, '')
 
         /* Iterate attached form rules */
-        _.forEach(formRules, rule => {
+        forEach(formRules, rule => {
           switch (rule.type) {
             case 'required':
               return validator.isEmpty(value)
@@ -161,8 +167,8 @@ const withValidator = (rules, messages) => {
       /* Get error message by key */
       getErrorMessage = key => {
         const { form } = this.state
-        if (_.filter(form, f => f.name === key).length > 0) {
-          return _.filter(form, f => f.name === key)[0].message
+        if (filter(form, f => f.name === key).length > 0) {
+          return filter(form, f => f.name === key)[0].message
         }
 
         this.formErrorLogger(key)
@@ -172,7 +178,7 @@ const withValidator = (rules, messages) => {
       /* Get all messages with form name and rules */
       getErrorMessages = () => {
         const { form } = this.state
-        return _.filter(form, f => !validator.isEmpty(f.message))
+        return filter(form, f => !validator.isEmpty(f.message))
       };
 
       /*
@@ -182,8 +188,8 @@ const withValidator = (rules, messages) => {
        */
       formIsValid = () => {
         const { form, required } = this.state
-        const errCount = _.filter(form, f => f.message !== '').length
-        const complete = _.filter(_.keys(required), formIndex => required[formIndex] === '').length
+        const errCount = filter(form, f => f.message !== '').length
+        const complete = filter(keys(required), formIndex => required[formIndex] === '').length
 
         if (errCount === 0 && complete === 0) {
           this.setState({ ...this.state, formIsValid: true })
