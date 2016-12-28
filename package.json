@@ -1,9 +1,19 @@
 {
   "name": "predatorjs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Painless React Form Validator, Predator is basic form validator inspired by Laravel Validation",
-  "main": "lib/index.js",
-  "author": "alfredcrozby@gmail.com",
+  "keywords": [
+    "react",
+    "form",
+    "validator",
+    "validation",
+    "laravel"
+  ],
+  "main": "./lib/index.js",
+  "author": "Alfred Crosby <alfredcrozby@gmail.com> (http://github.com/alfrcr)",
+  "bugs": {
+    "url": "https://github.com/alfrcr/predatorjs/issues"
+  },
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.18.0",
@@ -30,6 +40,8 @@
     "webpack-dev-middleware": "^1.9.0"
   },
   "dependencies": {
+    "hoist-non-react-statics": "^1.2.0",
+    "invariant": "^2.2.2",
     "lodash": "^4.17.2",
     "react-addons-update": "^15.4.1",
     "title-case": "^2.1.0",
@@ -41,6 +53,10 @@
     "build": "yarn lint && yarn run clean && babel ./es6 --out-dir ./lib",
     "start": "node examples/server.js",
     "prepublish": "yarn build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alfrcr/predatorjs.git"
   },
   "eslintConfig": {
     "parser": "babel-eslint",

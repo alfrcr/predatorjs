@@ -7,9 +7,9 @@ Predator is inspired by [Laravel Validation](https://laravel.com/docs/5.3/valida
 
 Predator is available at npm
 
-```$ npm install --save predatorjs```
+`$ npm install --save predatorjs`
 or
-```$ yarn add predatorjs```
+`$ yarn add predatorjs`
 
 ## Examples 
 
@@ -28,7 +28,11 @@ class ExampleForm extends Component {
     this.state = { ... }
   }
 
-  handleChange = (key, value) => { ... };
+  handleChange = (key, value) => {
+    this.setState({ form: { ...this.state.form, [key]: value } }, () =>
+      this.props.validate(key, value) // Validate in setState callback
+    )
+  };
 
   handleSubmit = e => { ... };
 
@@ -51,10 +55,7 @@ class ExampleForm extends Component {
               floatingLabelText="Username"
               fullWidth={true}
               value={form.username}
-              onChange={({ target }) => {
-                validate('username', target.value)
-                this.handleChange('username', target.value)
-              }}
+              onChange={({ target }) => this.handleChange('username', target.value)}
               errorText={getErrorMessage('username')}
             />
           </div>
@@ -65,15 +66,12 @@ class ExampleForm extends Component {
               floatingLabelText="Full Name"
               fullWidth={true}
               value={form.fullname}
-              onChange={({ target }) => {
-                validate('fullname', target.value)
-                this.handleChange('fullname', target.value)
-              }}
+              onChange={({ target }) => this.handleChange('fullname', target.value)}
               errorText={getErrorMessage('fullname')}
             />
           </div>
 
-          ... // other components
+          ... // other form components
 
           <div>
             <RaisedButton
@@ -93,7 +91,7 @@ class ExampleForm extends Component {
  * formRules is required
 */
 const formRules = {
-  username: 'required|min:6|max:12',
+  username: 'required|alphanumeric|min:6|max:12',
   fullname: 'required',
   email: 'required|email',
   phone: 'num'
@@ -120,26 +118,61 @@ export default withValidator(formRules, formMessages)(ExampleForm)
 #### `validate(key, value)`
 Validating a form based on key. Key must be unique and also must be exist in formRules
 
+#### `onInitValidate('#formID')`
+Validating form on initialize. This method aims to validate form defaultValue.
+You may not need to use this method, this method usually used on form which has default value (Eg: Edit form).
+
+If you need to use this method, you have to put this method in `componentDidMount` lifecycle.
+And don't forget to add selector to your form.
+```javascript
+componentDidMount() {
+  this.props.onInitValidate('#yourEditForm')
+}
+
+render() {
+  return (
+    <form id="yourEditForm">
+      ...
+    </form>
+  )
+}
+```
+
 #### `formIsValid`
 Return true if all required form has been filled and no errors found.
 
 #### `getErrorMessage(key)`
-Get error message based on key.
+Return `String`.
+Get error message based on form key.
+
+#### `getErrorMessages()`
+Return `Array`
+Return array of error messages contains form name and their error message.
+Message format :
+
+```javascript
+[
+  {
+    name: '',
+    message: ''
+  }
+]
+```
 
 ### HOC
 #### `withValidator(formRules, [, formMessage])`
 Higher order component that return all props which have been mentioned above. First parameter is form rules.
 Form rules must be an object. For instances:
-```
+```javascript
 const formRules = {
-  username: 'required|min:6|max:12',
+  username: 'required|alphanumeric|min:6|max:12',
   fullname: 'required',
   email: 'required|email',
   phone: 'num'
 }
 ```
 Second parameter is optional, Predator will use default messages if this parameter is not provided. Error message example:
-```
+```javascript
 const formMessages = {
   required: 'Telolet! {form} can not be empty!',
   email: 'This {form} is not a valid email!',
@@ -154,18 +187,19 @@ const formMessages = {
 These are available rules for a while.
 Feel free to add another rule by submitting PR
 
-| Rules         | Description           |
-| ------------- |:---------------------:|
-| `required`    | Form can not be empty |
-| `email`       | Validating Email      |
-| `url`         | Validating URL        |
-| `bool`        | Validating Bool       |
-| `ip`          | Validating IP         |
-| `date`        | Validating Date       |
-| `alpha`       | Only accept alphabet  |
-| `number`      | Only accept number    |
-| `min`         | Minimal character     |
-| `max`         | Maximal character     |
+| Rules          | Description                    |
+| ---------------|:------------------------------:|
+| `required`     | Form can not be empty          |
+| `email`        | Validating Email               |
+| `url`          | Validating URL                 |
+| `bool`         | Validating Bool                |
+| `ip`           | Validating IP                  |
+| `date`         | Validating Date                |
+| `alpha`        | Only accept alphabet           |
+| `num`          | Only accept number             |
+| `alphanumeric` | Only accept alphabet & number  |
+| `min`          | Minimal character              |
+| `max`          | Maximal character              |
 
 ## Todo
 

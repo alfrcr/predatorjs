@@ -3,7 +3,7 @@
 import React, { Component, PropTypes } from 'react'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import withValidator from '../es6/index'
+import withValidator from '../lib'
 
 class ExampleForm extends Component {
   constructor(props) {
@@ -11,18 +11,24 @@ class ExampleForm extends Component {
 
     this.state = {
       form: {
-        username: '',
+        username: 'alfrcr',
         fullname: '',
-        email: '',
-        gender: '',
-        phone: '',
-        address: ''
+        email: 'alfredcrozby@gmail',
+        phone: '08980780780',
+        address: 'Jln. Sumbangsih V. Karet Kuningan, Setiabudi. Jakarta Selatan'
       }
     }
   }
 
+  componentDidMount() {
+    /* Trigger onChange on all input form */
+    this.props.onInitValidate('#predator-form')
+  }
+
   handleChange = (key, value) => {
-    this.setState({ form: { ...this.state.form, [key]: value } })
+    this.setState({ form: { ...this.state.form, [key]: value } }, () =>
+      this.props.validate(key, value)
+    )
   };
 
   handleSubmit = e => {
@@ -32,27 +38,32 @@ class ExampleForm extends Component {
 
   render() {
     const {
-      validate,
       getErrorMessage,
+      getErrorMessages,
       formIsValid
     } = this.props
 
     const { form } = this.state
 
+    const errors = getErrorMessages()
+    const messagesList = errors.map((m, i) =>
+      <li key={i}>{m.name}: {m.message}</li>
+    )
+
     return (
-      <form onSubmit={e => this.handleSubmit(e)}>
+      <form id="predator-form" onSubmit={e => this.handleSubmit(e)}>
         <div style={{ maxWidth: 450, margin: '0 auto' }}>
           <h3 style={{ fontFamily: 'Helvetica' }}>Predator Example</h3>
+          {errors.length > 0 &&
+            <ul>{messagesList}</ul>
+          }
           <div>
             <TextField
               hintText="Username"
               floatingLabelText="Username"
               fullWidth={true}
               value={form.username}
-              onChange={({ target }) => {
-                validate('username', target.value)
-                this.handleChange('username', target.value)
-              }}
+              onChange={({ target }) => this.handleChange('username', target.value)}
               errorText={getErrorMessage('username')}
             />
           </div>
@@ -63,10 +74,7 @@ class ExampleForm extends Component {
               floatingLabelText="Full Name"
               fullWidth={true}
               value={form.fullname}
-              onChange={({ target }) => {
-                validate('fullname', target.value)
-                this.handleChange('fullname', target.value)
-              }}
+              onChange={({ target }) => this.handleChange('fullname', target.value)}
               errorText={getErrorMessage('fullname')}
             />
           </div>
@@ -77,10 +85,7 @@ class ExampleForm extends Component {
               floatingLabelText="Email"
               fullWidth={true}
               value={form.email}
-              onChange={({ target }) => {
-                validate('email', target.value)
-                this.handleChange('email', target.value)
-              }}
+              onChange={({ target }) => this.handleChange('email', target.value)}
               errorText={getErrorMessage('email')}
             />
           </div>
@@ -91,10 +96,7 @@ class ExampleForm extends Component {
               floatingLabelText="Phone"
               fullWidth={true}
               value={form.phone}
-              onChange={({ target }) => {
-                validate('phone', target.value)
-                this.handleChange('phone', target.value)
-              }}
+              onChange={({ target }) => this.handleChange('phone', target.value)}
               errorText={getErrorMessage('phone')}
             />
           </div>
@@ -115,11 +117,13 @@ class ExampleForm extends Component {
 ExampleForm.propTypes = {
   validate: PropTypes.func.isRequired,
   getErrorMessage: PropTypes.func.isRequired,
+  getErrorMessages: PropTypes.func.isRequired,
+  onInitValidate: PropTypes.func.isRequired,
   formIsValid: PropTypes.bool.isRequired
 }
 
 const formRules = {
-  username: 'required|min:6|max:12',
+  username: 'required|alphanumeric|min:8|max:15',
   fullname: 'required',
   email: 'required|email',
   phone: 'num'
