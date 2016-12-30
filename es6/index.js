@@ -2,7 +2,6 @@
 
 import map from 'lodash/map'
 import keys from 'lodash/keys'
-import isEqual from 'lodash/isEqual'
 import assign from 'lodash/assign'
 import filter from 'lodash/filter'
 import forEach from 'lodash/forEach'
@@ -80,14 +79,6 @@ export default function withValidator(rules, messages) {
           formMessages: createMessageState,
           formIsValid: false
         }
-      }
-
-      shouldComponentUpdate(nextProps, { form, formIsValid }) {
-        if (!isEqual(this.state.form, form) || !isEqual(this.state.formIsValid, formIsValid)) {
-          return true
-        }
-
-        return false
       }
 
       onInitValidate = selector => {
